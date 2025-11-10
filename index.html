@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz - EmailJS com JavaScript</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #1e1e2f;
+      color: #f0f0f0;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .container {
+      background: #2b2b3d;
+      padding: 30px;
+      width: 450px;
+      margin: auto;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      color: #00ffff;
+    }
+
+    .pergunta {
+      text-align: left;
+      margin-bottom: 20px;
+      padding: 10px;
+      border-left: 3px solid #00ffff;
+      background-color: #242436;
+      border-radius: 5px;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #00ffff;
+      color: #1e1e2f;
+      font-weight: bold;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background-color: #00b3b3;
+    }
+
+    #resultado {
+      font-weight: bold;
+      margin-top: 20px;
+      color: #00ffff;
+    }
+
+    .correto {
+      color: #00ff7f;
+      font-weight: bold;
+    }
+
+    .errado {
+      color: #ff4040;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Quiz - Lógica e Estilo do Chatbot</h1>
+
+<form id="quizForm">
+  <div class="pergunta" id="q1box">
+    <p>1) O que acontece quando o botão com id <code>chat-toggle</code> é clicado?</p>
+    <label><input type="radio" name="q1" value="a"> O chat é removido do DOM permanentemente.</label><br>
+    <label><input type="radio" name="q1" value="b"> O conteúdo do chat é redefinido.</label><br>
+    <label><input type="radio" name="q1" value="c"> A classe <code>hidden</code> é alternada, mostrando ou escondendo o chat.</label><br>
+    <label><input type="radio" name="q1" value="d"> Um alerta é exibido com a mensagem do chat.</label>
+  </div>
+
+  <div class="pergunta" id="q2box">
+    <p>2) Qual é a função de <code>e.preventDefault()</code> no envio do formulário do chat?</p>
+    <label><input type="radio" name="q2" value="a"> Impede que o usuário digite no campo de texto.</label><br>
+    <label><input type="radio" name="q2" value="b"> Impede que a página seja recarregada ao enviar o formulário.</label><br>
+    <label><input type="radio" name="q2" value="c"> Remove o botão de envio do formulário.</label><br>
+    <label><input type="radio" name="q2" value="d"> Faz o formulário desaparecer após o envio.</label>
+  </div>
+
+  <div class="pergunta" id="q3box">
+    <p>3) O que a função <code>addMessage(sender, text)</code> faz?</p>
+    <label><input type="radio" name="q3" value="a"> Cria um novo botão com o texto da mensagem.</label><br>
+    <label><input type="radio" name="q3" value="b"> Substitui todo o conteúdo do chat por uma nova mensagem.</label><br>
+    <label><input type="radio" name="q3" value="c"> Adiciona uma nova <code>&lt;div&gt;</code> com a mensagem ao final do chat e rola para o fim.</label><br>
+    <label><input type="radio" name="q3" value="d"> Envia a mensagem para o servidor.</label>
+  </div>
+
+  <div class="pergunta" id="q4box">
+    <p>4) Qual é o objetivo de <code>message.toLowerCase()</code> na função <code>respondToUser</code>?</p>
+    <label><input type="radio" name="q4" value="a"> Converter a resposta do bot para letras maiúsculas.</label><br>
+    <label><input type="radio" name="q4" value="b"> Garantir que a comparação de palavras-chave seja feita sem distinção entre maiúsculas e minúsculas.</label><br>
+    <label><input type="radio" name="q4" value="c"> Substituir espaços por hífens.</label><br>
+    <label><input type="radio" name="q4" value="d"> Remover todas as letras da mensagem.</label>
+  </div>
+
+  <div class="pergunta" id="q5box">
+    <p>5) O que faz a propriedade CSS <code>word-wrap: break-word;</code> aplicada às mensagens do chat?</p>
+    <label><input type="radio" name="q5" value="a"> Impede que o texto seja exibido.</label><br>
+    <label><input type="radio" name="q5" value="b"> Faz com que o texto fique centralizado.</label><br>
+    <label><input type="radio" name="q5" value="c"> Permite que palavras longas sejam quebradas para evitar estouro do layout.</label><br>
+    <label><input type="radio" name="q5" value="d"> Aplica uma borda ao redor das palavras.</label>
+  </div>
+
+  <button type="button" onclick="corrigir()">Enviar Respostas</button>
+</form>
+
+<script>
+  function corrigir() {
+    let respostasCorretas = {
+      q1: "c", // toggle da classe hidden
+      q2: "b", // impede recarregamento
+      q3: "c", // adiciona div com mensagem
+      q4: "b", // comparação sem case sensitive
+      q5: "c"  // quebra palavras longas
+    };
+
+    let pontos = 0;
+    let total = 5;
+    let form = document.getElementById("quizForm");
+
+    for (let q in respostasCorretas) {
+      let resposta = form[q].value;
+      let box = document.getElementById(q + "box");
+
+      let antigo = box.querySelector(".feedback");
+      if (antigo) antigo.remove();
+
+      let feedback = document.createElement("p");
+      feedback.classList.add("feedback");
+
+      if (resposta === respostasCorretas[q]) {
+        pontos++;
+        feedback.textContent = "✅ Correto!";
+        feedback.classList.add("correto");
+      } else {
+        let respostaCorretaTexto = "";
+        let labels = box.querySelectorAll('label input');
+        labels.forEach(input => {
+          if (input.value === respostasCorretas[q]) {
+            respostaCorretaTexto = input.parentNode.textContent.trim();
+          }
+        });
+
+        feedback.textContent = `❌ Errado. A resposta correta é: ${respostaCorretaTexto}`;
+        feedback.classList.add("errado");
+      }
+
+      box.appendChild(feedback);
+    }
+
+    document.getElementById("resultado").textContent =
+      `Você acertou ${pontos} de ${total} questões.`;
+  }
+</script>
+
+</body>
+
+</html>
